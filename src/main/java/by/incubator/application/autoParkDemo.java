@@ -14,7 +14,7 @@ public class autoParkDemo {
     public static void main(String[] args) {
         Map<Class<?>, Class<?>> interfaceToImplementation =
                 initInterfaceToImplementation(Fixer.class, MechanicService.class);
-        ApplicationContext context = new ApplicationContext("application", interfaceToImplementation);
+        ApplicationContext context = new ApplicationContext("by", interfaceToImplementation);
         VehicleCollection vehicleCollection = context.getObject(VehicleCollection.class);
 
         checkALlVehicles(context, vehicleCollection);
@@ -22,7 +22,7 @@ public class autoParkDemo {
         interfaceToImplementation =
                 initInterfaceToImplementation(Fixer.class, BadMechanicService.class);
 
-        context = new ApplicationContext("application", interfaceToImplementation);
+        context = new ApplicationContext("by", interfaceToImplementation);
         vehicleCollection = context.getObject(VehicleCollection.class);
 
         checkALlVehicles(context, vehicleCollection);
