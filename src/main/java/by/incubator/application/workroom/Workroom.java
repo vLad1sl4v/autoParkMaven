@@ -1,5 +1,6 @@
 package by.incubator.application.workroom;
 
+import by.incubator.application.entity.Vehicles;
 import by.incubator.application.fixer.Fixer;
 import by.incubator.application.vehicle.Vehicle;
 import by.incubator.application.infrastructure.core.annotations.Autowired;
@@ -13,10 +14,10 @@ public class Workroom {
 
     public Workroom() {}
 
-    public void checkAllVehicles(List<Vehicle> vehicles) {
-        List<Vehicle> notBrokenVehicles = new ArrayList<>();
+    public void checkAllVehicles(List<Vehicles> vehicles) {
+        List<Vehicles> notBrokenVehicles = new ArrayList<>();
 
-        for (Vehicle vehicle : vehicles) {
+        for (Vehicles vehicle : vehicles) {
             if (mechanic.isBroken(vehicle)) {
                 System.out.println("Broken vehicle:\n" + vehicle);
             } else {
@@ -26,7 +27,7 @@ public class Workroom {
 
         System.out.println("Not broken vehicles: ");
 
-        for (Vehicle vehicle : notBrokenVehicles) {
+        for (Vehicles vehicle : notBrokenVehicles) {
             System.out.println(vehicle);
         }
     }
