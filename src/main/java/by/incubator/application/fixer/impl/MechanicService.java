@@ -1,7 +1,8 @@
 package by.incubator.application.fixer.impl;
 
+import by.incubator.application.entity.Vehicles;
 import by.incubator.application.fixer.Fixer;
-import by.incubator.application.parser.ParserBreakingsFromFile;
+import by.incubator.application.parser.impl.ParserBreakingsFromFile;
 import by.incubator.application.vehicle.Vehicle;
 import by.incubator.application.infrastructure.core.annotations.Autowired;
 
@@ -29,7 +30,7 @@ public class MechanicService implements Fixer {
     }
 
     @Override
-    public Map<String, Integer> detectBreaking(Vehicle vehicle) {
+    public Map<String, Integer> detectBreaking(Vehicles vehicle) {
         Map<String, Integer> breakage = new HashMap<>();
         int detailsTypeNum = details.length;
         Random random = new Random();
@@ -56,7 +57,7 @@ public class MechanicService implements Fixer {
     }
 
     @Override
-    public void repair(Vehicle vehicle) {
+    public void repair(Vehicles vehicle) {
         String partOfLine = vehicle.getId() + ":";
 
         deleteBrokenVehicleLine(partOfLine, ORDERS_TEMP_PATH, ORDERS_PATH);
@@ -64,7 +65,7 @@ public class MechanicService implements Fixer {
     }
 
     @Override
-    public boolean isBroken(Vehicle vehicle) {
+    public boolean isBroken(Vehicles vehicle) {
         return parser.findBrokenVehicle(vehicle);
     }
 
@@ -101,7 +102,7 @@ public class MechanicService implements Fixer {
         return stringBuilder.toString();
     }
 
-    private void writeBreakageInFile(String brokenDetail, int breakageNum, Vehicle vehicle, String path) throws IOException {
+    private void writeBreakageInFile(String brokenDetail, int breakageNum, Vehicles vehicle, String path) throws IOException {
         File ordersFile = new File(path);
         BufferedWriter writer = new BufferedWriter(new FileWriter(ordersFile, true));
         writer.write(vehicle.getId() + ": " + brokenDetail + "," + breakageNum);

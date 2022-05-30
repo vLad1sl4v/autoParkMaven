@@ -1,20 +1,25 @@
-package by.incubator.application.parser;
+package by.incubator.application.parser.impl;
 
 import by.incubator.application.engines.DieselEngine;
 import by.incubator.application.engines.ElectricalEngine;
 import by.incubator.application.engines.GasolineEngine;
 import by.incubator.application.engines.Startable;
+import by.incubator.application.entity.Rents;
+import by.incubator.application.entity.Types;
+import by.incubator.application.entity.Vehicles;
+import by.incubator.application.parser.IVehicleParser;
 import by.incubator.application.vehicle.*;
 import by.incubator.application.infrastructure.core.annotations.Autowired;
 import by.incubator.application.infrastructure.core.annotations.InitMethod;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class ParserVehicleFromFile {
+public class ParserVehicleFromFile implements IVehicleParser {
     private String rentsPath = "src/main/resources/data/rents.csv";
     private String typesPath = "src/main/resources/data/types.csv";
     private String vehiclesPath = "src/main/resources/data/vehicles.csv";
@@ -30,11 +35,11 @@ public class ParserVehicleFromFile {
 
     }
 
-    public List<VehicleType> loadTypes() {
+    public List<Types> loadTypes() {
         String filePath = typesPath;
         String contentLine;
         List<String> vehicleTypeInfo;
-        List<VehicleType> types = new ArrayList<>();
+        List<Types> types = new ArrayList<>();
 
         File typesFile = new File(filePath);
 
@@ -43,8 +48,8 @@ public class ParserVehicleFromFile {
             while (scanner.hasNext()) {
                 contentLine = scanner.nextLine();
                 vehicleTypeInfo = splitContentLine(contentLine);
-                VehicleType vehicleType = createType(vehicleTypeInfo);
-                types.add(vehicleType);
+                Types type = createType(vehicleTypeInfo);
+                types.add(type);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -53,15 +58,15 @@ public class ParserVehicleFromFile {
         return types;
     }
 
-    public VehicleType createType(String csvString) {
+    public Types createType(String csvString) {
         return createType(splitContentLine(csvString));
     }
 
-    public List<Rent> loadRents() {
+    public List<Rents> loadRents() {
         String filePath = rentsPath;
         String contentLine;
         List<String> rentsInfo;
-        List<Rent> rents = new ArrayList<>();
+        List<Rents> rents = new ArrayList<>();
 
         File rentsFile = new File(filePath);
 
@@ -70,7 +75,7 @@ public class ParserVehicleFromFile {
             while (scanner.hasNext()) {
                 contentLine = scanner.nextLine();
                 rentsInfo = splitContentLine(contentLine);
-                Rent rent = createRent(rentsInfo);
+                Rents rent = createRent(rentsInfo);
                 rents.add(rent);
             }
         } catch (FileNotFoundException e) {
@@ -80,11 +85,11 @@ public class ParserVehicleFromFile {
         return rents;
     }
 
-    public List<Vehicle> loadVehicles() {
+    public List<Vehicles> loadVehicles() {
         String filePath = vehiclesPath;
         String contentLine;
         List<String> vehiclesInfo;
-        List<Vehicle> vehicles = new ArrayList<>();
+        List<Vehicles> vehicles = new ArrayList<>();
 
         File vehiclesFile = new File(filePath);
 
@@ -93,7 +98,7 @@ public class ParserVehicleFromFile {
             while (scanner.hasNext()) {
                 contentLine = scanner.nextLine();
                 vehiclesInfo = splitContentLine(contentLine);
-                Vehicle vehicle = createVehicle(vehiclesInfo);
+                Vehicles vehicle = createVehicle(vehiclesInfo);
                 vehicles.add(vehicle);
             }
         } catch (FileNotFoundException e) {
@@ -103,35 +108,11 @@ public class ParserVehicleFromFile {
         return vehicles;
     }
 
-    public Vehicle createVehicle(String csvString) {
+    public Vehicles createVehicle(String csvString) {
         return createVehicle(splitContentLine(csvString));
     }
 
-    public double sumTotalProfit() {
-        double sum = 0.0;
-
-        for (Vehicle vehicle : loadVehicles()) {
-            sum += vehicle.getTotalProfit();
-        }
-
-        return sum;
-    }
-
-    public void display() {
-        System.out.printf("%5s %10s %20s %10s %10s %10s %10s %10s %10s %10s %10s\n", "Id", "Type", "ModelName",
-                "Number", "Weight", "Year", "MileAge", "Color", "Income", "Tax", "Profit");
-
-        for (Vehicle vehicle : loadVehicles()) {
-            System.out.printf("%5s %10s %20s %10s %10s %10s %10s %10s %10.2f %10.2f %10.2f\n", vehicle.getId(), vehicle.getVehicleType().getTypeName(),
-                    vehicle.getModelName(), vehicle.getRegistrationNumber(), vehicle.getMass(), vehicle.getManufactureYear(),
-                    vehicle.getMileAge(), vehicle.getColor(), vehicle.getTotalIncome(), vehicle.getCalcTaxPerMonth(),
-                    vehicle.getTotalProfit());
-        }
-
-        System.out.printf("%5s %119.2f\n", "Total", sumTotalProfit());
-    }
-
-    private VehicleType createType(List<String> vehicleTypeInfo) {
+    private Types createType(List<String> vehicleTypeInfo) {
         final int idNum = 0;
         final int typeNameNum = 1;
         final int taxCoefficientNum = 2;
@@ -142,7 +123,7 @@ public class ParserVehicleFromFile {
         String taxCoefficientStr = vehicleTypeInfo.get(taxCoefficientNum);
         double taxCoefficient = Double.parseDouble(taxCoefficientStr);
 
-        return new VehicleType(id, typeName, taxCoefficient);
+        return new Types((long) id, typeName, taxCoefficient);
     }
 
     private List<String> splitContentLine(String contentLine) {
@@ -183,7 +164,7 @@ public class ParserVehicleFromFile {
     }
 
 
-    private Rent createRent(List<String> rentsInfo) {
+    private Rents createRent(List<String> rentsInfo) {
         final int idNum = 0;
         final int dateNum = 1;
         final int costNum = 2;
@@ -203,12 +184,10 @@ public class ParserVehicleFromFile {
         String costStr = rentsInfo.get(costNum);
         double cost = Double.parseDouble(costStr);
 
-        getVehicle(id).getRents().add(new Rent(id, date, cost));
-
-        return new Rent(id, date, cost);
+        return new Rents((long)id, date, cost);
     }
 
-    private Vehicle createVehicle(List<String> vehiclesInfo) {
+    private Vehicles createVehicle(List<String> vehiclesInfo) {
         final int idNum = 0;
         final int typeNum = 1;
         final int modelNameNum = 2;
@@ -222,7 +201,7 @@ public class ParserVehicleFromFile {
         int id = Integer.parseInt(vehiclesInfo.get(idNum));
 
         int typeId = Integer.parseInt(vehiclesInfo.get(typeNum));
-        VehicleType vehicleType = getVehicleType(typeId);
+        Types vehicleType = getVehicleType(typeId);
 
         String modelName = vehiclesInfo.get(modelNameNum);
         String registrationNumber = vehiclesInfo.get(registrationNumberNum);
@@ -234,7 +213,7 @@ public class ParserVehicleFromFile {
         String engineName = vehiclesInfo.get(engineTypeNum);
         Startable engine = createEngine(engineName, vehiclesInfo);
 
-        return new Vehicle(id, vehicleType, modelName, registrationNumber, mass, manufactureYear, mileAge, color, engine);
+        return new Vehicles((long)id, (long)vehicleType.getId(), modelName, registrationNumber, mass, manufactureYear, mileAge, color.toString(), engine.toString());
     }
 
     private Startable createEngine(String engineName, List<String> vehiclesInfo) {
@@ -278,9 +257,8 @@ public class ParserVehicleFromFile {
         }
     }
 
-    private Vehicle getVehicle(int vehicleId) {
-
-        for (Vehicle vehicle : loadVehicles()) {
+    private Vehicles getVehicle(int vehicleId) {
+        for (Vehicles vehicle : loadVehicles()) {
             if (vehicleId == vehicle.getId()) {
                 return vehicle;
             }
@@ -288,10 +266,10 @@ public class ParserVehicleFromFile {
         throw new IllegalArgumentException();
     }
 
-    private VehicleType getVehicleType(int typeId) {
-        for (VehicleType vehicleType : loadTypes()) {
-            if (typeId == vehicleType.getId()) {
-                return vehicleType;
+    private Types getVehicleType(int typeId) {
+        for (Types type : loadTypes()) {
+            if (typeId == type.getId()) {
+                return type;
             }
         }
         throw new IllegalArgumentException();

@@ -1,15 +1,16 @@
 package by.incubator.application.fixer;
 
+import by.incubator.application.entity.Vehicles;
 import by.incubator.application.vehicle.Vehicle;
 
 import java.util.Map;
 
 public interface Fixer {
-    Map<String, Integer> detectBreaking(Vehicle vehicle);
+    Map<String, Integer> detectBreaking(Vehicles vehicle);
 
-    void repair(Vehicle vehicle);
+    void repair(Vehicles vehicle);
 
-    default boolean detectAndRepair(Vehicle vehicle) {
+    default boolean detectAndRepair(Vehicles vehicle) {
         detectBreaking(vehicle);
         if (isBroken(vehicle)) {
             repair(vehicle);
@@ -18,5 +19,5 @@ public interface Fixer {
         return false;
     }
 
-    boolean isBroken(Vehicle vehicle);
+    boolean isBroken(Vehicles vehicle);
 }
