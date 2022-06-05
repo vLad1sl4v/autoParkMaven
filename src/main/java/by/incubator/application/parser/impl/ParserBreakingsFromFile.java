@@ -1,11 +1,13 @@
-package by.incubator.application.parser;
+package by.incubator.application.parser.impl;
 
+import by.incubator.application.entity.Vehicles;
+import by.incubator.application.parser.IBreakingsParser;
 import by.incubator.application.vehicle.Vehicle;
 import by.incubator.application.infrastructure.core.annotations.InitMethod;
 
 import java.io.*;
 
-public class ParserBreakingsFromFile {
+public class ParserBreakingsFromFile implements IBreakingsParser {
     private final static String ORDERS_PATH = "src/main/resources/data/orders.csv";
     private final static String ORDERS_TEMP_PATH = "src/main/resources/data/ordersTemp.csv";
 
@@ -14,7 +16,7 @@ public class ParserBreakingsFromFile {
     @InitMethod
     public void init(){}
 
-    public boolean findBrokenVehicle(Vehicle vehicle) {
+    public boolean findBrokenVehicle(Vehicles vehicle) {
         String partOfLine = vehicle.getId() + ":";
         String currentLine;
 
