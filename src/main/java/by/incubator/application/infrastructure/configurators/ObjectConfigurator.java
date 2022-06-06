@@ -1,4 +1,4 @@
-package by.incubator.application.infrastructure.configurations;
+package by.incubator.application.infrastructure.configurators;
 
 import by.incubator.application.infrastructure.core.Context;
 

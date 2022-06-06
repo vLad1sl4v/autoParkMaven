@@ -1,8 +1,8 @@
-package by.incubator.application.infrastructure.configurations.impl;
+package by.incubator.application.infrastructure.configurators.impl;
 
 import by.incubator.application.infrastructure.core.Context;
 import by.incubator.application.infrastructure.core.annotations.Autowired;
-import by.incubator.application.infrastructure.configurations.ObjectConfigurator;
+import by.incubator.application.infrastructure.configurators.ObjectConfigurator;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.Field;
